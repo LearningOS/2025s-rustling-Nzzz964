@@ -29,7 +29,7 @@ mod tests {
     fn is_vec_pop_eq_bar() {
         // let mut foo = vec![String::from("Foo")].append_bar();
         let foo = vec![String::from("Foo")];
-        let mut foo = a.append_bar();
+        let mut foo = foo.append_bar();
         assert_eq!(foo.pop().unwrap(), String::from("Bar"));
         assert_eq!(foo.pop().unwrap(), String::from("Foo"));
     }
