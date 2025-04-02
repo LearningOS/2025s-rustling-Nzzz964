@@ -1,8 +1,7 @@
 /*
-	heap
-	This question requires you to implement a binary heap function
+    heap
+    This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -37,7 +36,21 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.items.push(value);
+        self.count += 1;
+
+        // 上滤
+        let mut idx = self.count;
+        while idx > 1 {
+            let p_idx = self.parent_idx(idx);
+            // 如果不符合堆序
+            if (self.comparator)(&self.items[p_idx], &self.items[idx]) {
+                break;
+            }
+            // 交换当前元素和它的父元素
+            self.items.swap(idx, p_idx);
+            idx = p_idx;
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -57,8 +70,16 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        let left_idx = self.left_child_idx(idx);
+        let right_idx = self.right_child_idx(idx);
+
+        if right_idx <= self.count
+            && (self.comparator)(&self.items[right_idx], &self.items[left_idx])
+        {
+            right_idx
+        } else {
+            left_idx
+        }
     }
 }
 
@@ -84,8 +105,36 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.is_empty() {
+            return None;
+        }
+
+        // 交换根节点和最后一个元素，为了之后下滤操作
+        self.items.swap(1, self.count);
+
+        // 获取堆顶元素
+        let result = self.items.pop().unwrap();
+        self.count -= 1;
+
+        // 如果堆不为空，进行下滤操作
+        if !self.is_empty() {
+            let mut idx = 1;
+
+            while self.children_present(idx) {
+                // 找到数值最小的孩子节点下标
+                let child_idx = self.smallest_child_idx(idx);
+
+                if (self.comparator)(&self.items[child_idx], &self.items[idx]) {
+                    self.items.swap(idx, child_idx);
+                    idx = child_idx;
+                } else {
+                    // 下滤操作完成
+                    break;
+                }
+            }
+        }
+
+        Some(result)
     }
 }
 
